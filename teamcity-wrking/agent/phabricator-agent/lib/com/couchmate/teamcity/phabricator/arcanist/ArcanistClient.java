@@ -43,6 +43,8 @@ public final class ArcanistClient {
                     .setCommand(arcPath)
                     .setAction("patch")
                     .setWorkingDir(this.workingDir)
+                    .setFlag("--nobranch")
+                    .setFlag("--nocommit")
                     .setArg("--diff")
                     .setArg(formatDiffId(diffId))
                     .setFlagWithValueEquals(new StringKeyValue("--conduit-token", this.conduitToken))
