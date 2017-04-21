@@ -5,7 +5,6 @@ import com.couchmate.teamcity.phabricator.CommandBuilder;
 import com.couchmate.teamcity.phabricator.PhabLogger;
 import com.couchmate.teamcity.phabricator.arcanist.ArcanistClient;
 import com.couchmate.teamcity.phabricator.conduit.ConduitClient;
-import com.couchmate.teamcity.phabricator.git.GitClient;
 import jetbrains.buildServer.agent.BuildRunnerContext;
 
 /**
@@ -15,7 +14,6 @@ public class ApplyPatch extends Task {
 
     private PhabLogger logger;
     private AppConfig appConfig;
-    private GitClient gitClient = null;
     private ArcanistClient arcanistClient = null;
     private ConduitClient conduitClient = null;
     private BuildRunnerContext runner;
@@ -29,7 +27,6 @@ public class ApplyPatch extends Task {
     @Override
     protected void setup() {
         logger.info(String.format("Phabricator Plugin: Applying Differential Patch %s", appConfig.getDiffId()));
-        this.gitClient = new GitClient(this.appConfig.getWorkingDir());
         this.arcanistClient = new ArcanistClient(
                 this.appConfig.getConduitToken(), this.appConfig.getWorkingDir(), this.appConfig.getArcPath());
         this.conduitClient = new ConduitClient(this.appConfig.getPhabricatorUrl().toString(), this.appConfig.getConduitToken());
@@ -38,14 +35,6 @@ public class ApplyPatch extends Task {
     @Override
     protected void execute() {
         try {
-            CommandBuilder.Command reset = gitClient.reset();
-            int resetCode = reset.exec().join();
-            logger.info(String.format("Reset exited with code: %d", resetCode));
-
-            CommandBuilder.Command clean = gitClient.clean();
-            int cleanCode = clean.exec().join();
-            logger.info(String.format("Clean exited with code: %d", cleanCode));
-
             CommandBuilder.Command patch = arcanistClient.patch(this.appConfig.getDiffId());
             int patchCode = patch.exec().join();
             logger.info(String.format("Patch exited with code: %d", patchCode));
