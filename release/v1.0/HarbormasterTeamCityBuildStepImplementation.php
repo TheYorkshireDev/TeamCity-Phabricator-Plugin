@@ -60,7 +60,7 @@ final class HarbormasterTeamCityBuildStepImplementation
         ->addRevisionId($variables['buildable.revision'])
         ->build();
 
-    $future = id(new HTTPFuture($uri, $payload))
+    $future = id(new HTTPSFuture($uri, $payload))
       ->setMethod($method)
       ->addHeader('Content-Type', $contentType)
       ->setTimeout(60);
