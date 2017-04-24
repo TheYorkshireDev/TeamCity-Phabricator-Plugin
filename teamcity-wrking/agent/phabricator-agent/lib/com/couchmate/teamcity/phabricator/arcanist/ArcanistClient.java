@@ -43,6 +43,7 @@ public final class ArcanistClient {
                     .setCommand(arcPath)
                     .setAction("patch")
                     .setWorkingDir(this.workingDir)
+                    .setArg("--diff")
                     .setArg(formatDiffId(diffId))
                     .setFlagWithValueEquals(new StringKeyValue("--conduit-token", this.conduitToken))
                     .build();
@@ -63,8 +64,7 @@ public final class ArcanistClient {
         Pattern diffIdWoD = Pattern.compile("^[0-9]+$");
         Matcher m = diffIdWithD.matcher(diffId);
         Matcher m1 = diffIdWoD.matcher(diffId);
-       // if(m.matches()) return m.group(1);
-        if(m.matches()) return diffId;
+        if(m.matches()) return m.group(1);
         else if(m1.matches()) return diffId;
         else throw new TCPhabException(String.format("Invalid Differential DiffId %s", diffId));
     }
