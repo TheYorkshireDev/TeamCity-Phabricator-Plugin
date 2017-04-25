@@ -1,3 +1,68 @@
+Automattic Development Notes:
+
+The current production version for the TeamCity Plugin can be found in tearmicty-release/v1.1.  The php files for the phabricator side of the plugin can be found in phabricator-release/v1.1:
+
+Description of directories:
+
+The primary directories for Automattic development are `teamcity-wrking`, `teamcity-test`, `phabricator-release`, and `teamcity-release`.  Because we have updated this project just by modifying and recompling the java vs. using maven our development process is a bit different.
+
+`teamcity-wrking` should be used to make changes to the java files and recompile.  This directory should also be used to update jar files with the newly compiled updates.
+
+`teamcity-test` contains only the files necessary for zipping the plugin in the format to be uploaded to TC.  Any updated jar files from `teamcity-wrking` should also be copied here.
+
+`agent` and `server` contain all custom (non-jetpack developed) `.java` files.  If modifying a java file that does not exist in `teamcity-wrking`, copy the original java file from the relvevant directory and add it to teamcity-wrking.
+
+Development Workflow:
+
+At this point, only files from `agent-1.0-SNAPSHOT.jar` have needed modification.  To apply changes, `teamcity-wrking` was created by unzipping `TeamCity-Phabricator-Plugin/release/v1.0/teamcity-phabricator-plugin.zip`, and by unpacking `agent-1.0-SNAPSHOT.jar`.  The java files present in that directory were added manually by coping from the `agent` directory.
+ 
+`teamcity-wrking` also contains additional jar files, that were not included when `teamcity-phabricator-plugin.zip` was unzipped.  Through updating the java files, it became evident we were missing some dependencies, those jar files were added here to compile updated java files.
+
+Missing Jetbrains JAR packages can be found and downloaded here: https://download.jetbrains.com/teamcity-repository/org/jetbrains/teamcity/
+
+After the relevant jar file has been updated it should be copied to replace the existing copy in `teamcity-test`.  `teamcity-test` is where the plugin should be zipped into it's final format for uploading to TC.
+
+Note on zipping: For TC to read the plugin it must be zipped in a very specific format. `teamcity-test/agent/phabricator-agent/` needs to be zipped separately first. When unzipped`phabricator-agent.zip` should follow this structure, with a top-level directory named `phabricator-agent`:
+
+phabricator-agent
+  |
+  | -- lib
+  	|
+  	| -- agent-1.0-SNAPSHOT.jar
+  	|
+  	| -- common-1.0-SNAPSHOT.jar, 
+  	|
+  	| -- remaing jar files, etc.
+  |
+  | -- teamcity-plugin.xml
+
+
+Once `phabricator-agent.zip` is zipped inside `teamcity-test/agent` the unzipped copy of the files should be removed.  After removing unzipped files from `teamcity-test/agent` the entire `teamcity-test` directory can be zipped to create the final upload file `teamcity-phabricator-plugin.zip`  The `teamcity-test/` directory has been left as a sample, and the removal of files should not be commited the repo.
+
+
+
+Helpful Commands:
+
+To unpack a jar file:
+jar xf agent-1.0-SNAPSHOT.jar
+
+To compile changed java file – this will generate a new class file: 
+javac -extdirs "./" com/couchmate/teamcity/phabricator/Agent.java
+
+To update a jar file:
+jar vuf agent-1.0-SNAPSHOT.jar com/couchmate/teamcity/phabricator/tasks/ApplyPatch.class
+
+Zipping the phabricator-agent file:
+agent xxx$ zip phabricator-agent.zip ./* -r
+
+Zipping the entire plugin:
+teamcity-phabricator-plugin xxx$ zip teamcity-phabricator-plugin.zip ./* -r
+
+
+
+------------------------------------------------------
+
+
 ***Note***: I'm not actively maintaining this repo at the moment as I'm not using Phabricator or TC. Feel free to submit PRs or fork for your own use!.
 
 #TeamCity Phabricator Plugin
