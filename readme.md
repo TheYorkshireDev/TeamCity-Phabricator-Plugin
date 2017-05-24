@@ -1,3 +1,5 @@
+<h2>UPDATE: The TC side of the plugin is not in use due to performance concerns - we have replaced this functionality with bash scripts that can be found in the patch template on TC</h2>
+
 <h2>Automattic Development Notes:</h2>
 
 The current production version for the TeamCity Plugin can be found in tearmicty-release/v1.1.  The php files for the phabricator side of the plugin can be found in phabricator-release/v1.1:
